@@ -13,6 +13,7 @@ namespace Code\RefactorBundle\Refactor;
 use Code\RefactorBundle\Helper\StringHelper;
 use Code\RefactorBundle\Command\RefactoringValidator;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class Refactor {
 
@@ -20,8 +21,9 @@ class Refactor {
     private $search = array();
     private $replace = array();
     private $directory;
-    private $validExtentions = array('php','yml','js','twig');
+    private $validExtentions = array('php','yml','xml','js','twig');
     private $ignoreFolders = array('/vendor','/web','/app/cache','app/logs','bin','/js/lib');
+    private $output ;
 
     public function __construct($search, $replace, $directory = '')
     {
@@ -31,17 +33,22 @@ class Refactor {
         $this->search = $this->getAvailableWords($search);
         $this->replace = $this->getAvailableWords($replace);
         $this->directory = empty($directory) ? dirname(__FILE__) : $directory;
-        echo '<h2> current dir : '. $this->directory . '</h2>';
+        $this->output = new ConsoleOutput();
+        $this->dumpMessage("\ncurrent dir :  $this->directory");
     }
 
-    private function getAvailableWords($word)
+    protected function dumpMessage($message)
+    {
+        $this->output->writeln( $message );
+    }
+    protected function getAvailableWords($word)
     {
         $word = strtolower($word);
         $list = array();
         $list[] = $word . '_';
+        $list[] = $word . '.';
         $word[0] = strtoupper($word[0]);
         $list[] = $word;
-        var_dump($list);
         return $list;
 
     }
@@ -49,11 +56,11 @@ class Refactor {
     public function replaceRecursive($dir = '')
     {
         $dir = empty($dir) ? $this->directory : $dir;
-        echo $dir;
+        $this->dumpMessage("Scan dir : $dir ");
 
         if(StringHelper::endsWith($dir,$this->ignoreFolders))
         {
-            echo " <h2 style='color:gold'> Ignore $dir </h2>";
+            $this->dumpMessage("\tIgnore");
             return 0;
         }
 
@@ -71,9 +78,8 @@ class Refactor {
                     $content = file_get_contents($path);
                     if(StringHelper::contains($content, $this->search))
                     {
-                        echo "<p style='color:red;'> $path </p>";
+                        $this->dumpMessage("\tRefactor content : $path");
                         $newContent = str_replace($this->search, $this->replace, file_get_contents($path));
-                        //echo "<p> $newContent </p>";
                         file_put_contents($path, $newContent);
                     }
                 }
@@ -86,7 +92,7 @@ class Refactor {
             $newPath = $dir . '/' . str_replace($this->search, $this->replace, $filename);
             if(strcmp($newPath, $path) != 0 )
             {
-                echo "<h3 style='color:blue'>change name : " . "$filename" . " -> " . basename($newPath) . " </h3>";
+                $this->dumpMessage("\tRefactor name $filename -> " . basename($newPath));
                 rename($path, $newPath);
             }
 

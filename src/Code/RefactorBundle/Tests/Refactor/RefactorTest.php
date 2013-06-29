@@ -11,8 +11,13 @@ namespace Code\RefactorBundle\Tests\Refactor;
 
 use Code\RefactorBundle\Refactor\Refactor;
 use Symfony\Component\Filesystem\Filesystem;
+use Code\RefactorBundle\Helper\DialogHelper;
+use Symfony\Component\Console\Helper\HelperSet;
+use Symfony\Component\Console\Helper\FormatterHelper;
+use Symfony\Component\Console\Output\StreamOutput;
 
-class RefactorTest extends \PHPUnit_Framework_TestCase {
+class RefactorTest extends \PHPUnit_Framework_TestCase
+{
 
     protected $filesystem;
     protected $tmpDir;
@@ -20,31 +25,56 @@ class RefactorTest extends \PHPUnit_Framework_TestCase {
 
     public function setUp()
     {
-        $this->tmpDir = '/var/www/tmp'; //sys_get_temp_dir().'/sf2';
-        $this->projectDir = $this->tmpDir.'/sf2';
+        $this->tmpDir = sys_get_temp_dir().'/sf2'; //'/var/www/sf2';
+        $this->projectDir = $this->tmpDir;
         $this->filesystem = new Filesystem();
         $this->filesystem->remove($this->tmpDir);
         // get symfony standard edition
-        echo exec("composer create-project symfony/framework-standard-edition $this->projectDir/ 2.3.1 --quiet --no-interaction");
+        exec("composer create-project symfony/framework-standard-edition $this->projectDir/ 2.3.1 --quiet --no-interaction");
         // configuration
-        echo exec("setfacl -R -m u:www-data:rwx -m u:`whoami`:rwx $this->projectDir/app/cache $this->projectDir/app/logs");
-        echo exec("setfacl -dR -m u:www-data:rwx -m u:`whoami`:rwx $this->projectDir/app/cache $this->projectDir/app/logs");
+        exec("setfacl -R -m u:www-data:rwx -m u:`whoami`:rwx $this->projectDir/app/cache $this->projectDir/app/logs");
+        exec("setfacl -dR -m u:www-data:rwx -m u:`whoami`:rwx $this->projectDir/app/cache $this->projectDir/app/logs");
 
     }
 
     public function tearDown()
     {
-        //$this->filesystem->remove($this->tmpDir);
+        $this->filesystem->remove($this->tmpDir);
     }
 
-    public function testRefactor1()
+
+    public function testRefactor()
     {
-        $search = 'Acme';
-        $replace = 'Application';
-        $refactor = new Refactor($search, $replace, $this->projectDir);
-        //$refactor->replaceRecursive();
+        /*
+        $dialog = $this->getDialogHelper();
+        $dialog->writeSection($this->getOutputStream(), "++++++++++++++++++++++");
+        */
+        $refactor = new Refactor('Acme', 'Application', $this->projectDir);
+        $refactor->replaceRecursive();
         $this->assertTrue(true);
     }
 
+    protected function getInputStream($input)
+    {
+        $stream = fopen('php://memory', 'r+', false);
+        fputs($stream, $input);
+        rewind($stream);
+
+        return $stream;
+    }
+
+    protected function getOutputStream()
+    {
+        return new StreamOutput(fopen('php://memory', 'r+', false));
+    }
+
+    protected function getDialogHelper()
+    {
+        $dialog = new DialogHelper();
+
+        $helperSet = new HelperSet(array(new FormatterHelper()));
+        $dialog->setHelperSet($helperSet);
+        return $dialog;
+    }
 
 }
