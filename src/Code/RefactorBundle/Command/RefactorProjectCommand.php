@@ -37,6 +37,6 @@ class RefactorProjectCommand extends RefactorCommand {
 
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        
+
     }
 }
