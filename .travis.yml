@@ -7,7 +7,8 @@ php:
 
 before_script:
     - composer install -n
-    - php app/console cache:clear
+    - pwd
+    - ls
     - setfacl -d -m u:www-data:rwx -m u:`whoami`:rwx app/cache app/logs
     - setfacl -dR -m u:www-data:rwx -m u:`whoami`:rwx app/cache app/logs
 
