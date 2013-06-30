@@ -11,11 +11,11 @@ namespace Code\RefactorBundle\Refactor;
 
 
 use Code\RefactorBundle\Helper\StringHelper;
-use Code\RefactorBundle\Command\RefactoringValidator;
+use Code\RefactorBundle\Validation\BasicValidation;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
-class Refactor {
+abstract class Refactor {
 
     protected $filesystem;
     private $search = array();
@@ -27,17 +27,17 @@ class Refactor {
 
     public function __construct($search, $replace, $directory = '')
     {
-        RefactoringValidator::validatePreRefactoring($search, $replace);
+        BasicValidation::validatePreRefactoring($search, $replace);
 
         $this->filesystem = new Filesystem();
         $this->search = $this->getAvailableWords($search);
         $this->replace = $this->getAvailableWords($replace);
         $this->directory = empty($directory) ? dirname(__FILE__) : $directory;
         $this->output = new ConsoleOutput();
-        $this->dumpMessage("\ncurrent dir :  $this->directory");
+        $this->dump("\ncurrent dir :  $this->directory");
     }
 
-    protected function dumpMessage($message)
+    protected function dump($message)
     {
         $this->output->writeln( $message );
     }
@@ -56,11 +56,11 @@ class Refactor {
     public function replaceRecursive($dir = '')
     {
         $dir = empty($dir) ? $this->directory : $dir;
-        $this->dumpMessage("Scan dir : $dir ");
+        $this->dump("Scan dir : $dir ");
 
         if(StringHelper::endsWith($dir,$this->ignoreFolders))
         {
-            $this->dumpMessage("\tIgnore");
+            $this->dump("\tIgnore");
             return 0;
         }
 
@@ -78,7 +78,7 @@ class Refactor {
                     $content = file_get_contents($path);
                     if(StringHelper::contains($content, $this->search))
                     {
-                        $this->dumpMessage("\tRefactor content : $path");
+                        $this->dump("\tRefactor content : $path");
                         $newContent = str_replace($this->search, $this->replace, file_get_contents($path));
                         file_put_contents($path, $newContent);
                     }
@@ -92,10 +92,30 @@ class Refactor {
             $newPath = $dir . '/' . str_replace($this->search, $this->replace, $filename);
             if(strcmp($newPath, $path) != 0 )
             {
-                $this->dumpMessage("\tRefactor name $filename -> " . basename($newPath));
+                $this->dump("\tRefactor name $filename -> " . basename($newPath));
                 rename($path, $newPath);
             }
 
         }
+    }
+
+    public function rename($new)
+    {
+        // TODO: rename the project
+    }
+
+    public function safeDelete()
+    {
+        // TODO: rename the project
+    }
+
+    public function scan()
+    {
+        // TODO: scan all files
+    }
+
+    public function getImpact()
+    {
+        // TODO: get impact of the refactoring
     }
 }

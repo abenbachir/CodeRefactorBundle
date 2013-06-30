@@ -21,7 +21,34 @@ class RefactorProjectCommand extends RefactorCommand {
      */
     protected function configure()
     {
+        $this
+            ->setDefinition(array(
+                new InputOption('project-name', '', InputOption::VALUE_REQUIRED, 'The project-name of the project to refactor'),
+                new InputOption('new-project-name', '', InputOption::VALUE_REQUIRED, 'The new-project-name of the project to refactor'),
+            ))
+            ->setDescription('Refactor a project name')
+            ->setHelp(<<<EOT
+                        The <info>refactor:project</info> command helps you refactoring your projects.
 
+                        By default, the command interacts with the developer to tweak the refactoring.
+                        Any passed option will be used as a default value for the interaction
+                        (<comment>--project-name</comment> is the only one needed if you follow the
+                        conventions):
+
+                        <info>php app/console refactor:project --project-name=Acme</info>
+
+                        Note that you can use <comment>/</comment> instead of <comment>\\ </comment>for the namespace delimiter to avoid any
+                        problem.
+
+                        If you want to disable any user interaction, use <comment>--no-interaction</comment> but don't forget to pass all needed options:
+
+                        <info>php app/console generate:bundle --namespace=Acme/BlogBundle --dir=src [--project-name=...] --no-interaction</info>
+
+                        Note that the bundle namespace must end with "Bundle".
+EOT
+            )
+            ->setName('refactor:project:rename')
+        ;
     }
 
     /**

@@ -12,6 +12,6 @@ namespace Code\RefactorBundle\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Code\RefactorBundle\Refactor;
 
-class RefactorCommand extends ContainerAwareCommand {
+abstract class RefactorCommand extends ContainerAwareCommand {
 
 }

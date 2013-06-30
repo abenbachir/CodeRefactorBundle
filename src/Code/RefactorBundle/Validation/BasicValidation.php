@@ -7,10 +7,10 @@
  * To change this template use File | Settings | File Templates.
  */
 
-namespace Code\RefactorBundle\Command;
+namespace Code\RefactorBundle\Validation;
 
 
-class RefactoringValidator {
+class BasicValidation {
 
     public static function validateSearchName($search)
     {

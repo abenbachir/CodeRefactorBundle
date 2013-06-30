@@ -22,6 +22,9 @@ class CodeRefactorExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
+        $container->setParameter('code_refactor.extensions', $config['scan']['extensions']);
+        $container->setParameter('code_refactor.ignore', $config['scan']['ignore']);
+
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
     }

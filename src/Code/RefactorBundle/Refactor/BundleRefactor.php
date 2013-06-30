@@ -10,6 +10,42 @@
 namespace Code\RefactorBundle\Refactor;
 
 
-class BundleRefactor extends Refactor {
+class BundleRefactor extends Refactor
+{
+    public $bundle;
 
+    public function __construct($bundle)
+    {
+        // TODO: validate existing bundle
+
+        $this->bundle = $bundle;
+    }
+    /**
+     * @inheritdoc
+     */
+    public function rename($new)
+    {
+        // TODO: rename the project
+    }
+    /**
+     * @inheritdoc
+     */
+    public function safeDelete()
+    {
+        // TODO: rename the project
+    }
+    /**
+     * @inheritdoc
+     */
+    public function scan()
+    {
+        // TODO: scan all files
+    }
+    /**
+     * @inheritdoc
+     */
+    public function getImpact()
+    {
+        // TODO: get impact of the refactoring
+    }
 }

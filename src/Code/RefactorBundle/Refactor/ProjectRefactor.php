@@ -10,6 +10,43 @@
 namespace Code\RefactorBundle\Refactor;
 
 
-class ProjectRefactor extends Refactor{
+class ProjectRefactor extends Refactor
+{
+    public $projectName;
 
+    public function __construct($projectName)
+    {
+        // TODO: validate existing project
+
+        $this->projectName = $projectName;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rename($new)
+    {
+        // TODO: rename the project
+    }
+    /**
+     * @inheritdoc
+     */
+    public function safeDelete()
+    {
+        // TODO: rename the project
+    }
+    /**
+     * @inheritdoc
+     */
+    public function scan()
+    {
+        // TODO: scan all files
+    }
+    /**
+     * @inheritdoc
+     */
+    public function getImpact()
+    {
+        // TODO: get impact of the refactoring
+    }
 }
