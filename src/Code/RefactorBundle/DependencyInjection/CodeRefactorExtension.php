@@ -24,8 +24,9 @@ class CodeRefactorExtension extends Extension
 
         $container->setParameter('code_refactor.extensions', $config['scan']['extensions']);
         $container->setParameter('code_refactor.ignore', $config['scan']['ignore']);
+        $container->setParameter('code_refactor.working_dir', dirname($container->getParameter('kernel.root_dir')) );
 
-        $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('services.xml');
+        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('services.yml');
     }
 }

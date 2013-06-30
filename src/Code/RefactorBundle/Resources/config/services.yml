@@ -1,0 +1,8 @@
+
+services:
+    code_refactor.scan_dir:
+        class: Code\RefactorBundle\Services\ScanDir
+        calls:
+            - [setWorkingDir, [%code_refactor.working_dir%]]
+            - [setExtensions, [%code_refactor.extensions%]]
+            - [setIgnorePaths, [%code_refactor.ignore%]]
