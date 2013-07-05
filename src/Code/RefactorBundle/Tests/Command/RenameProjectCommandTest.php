@@ -27,6 +27,13 @@ class RenameProjectCommandTest extends GenerateCommandTest
         $tester->execute($options);
     }
 
+    public function getInteractiveCommandData()
+    {
+        return array(
+            array(array('--project-name' => 'Acme', '--new-project-name' => 'Foo'), array('Acme','Foo'), array('Acme','Foo')),
+        );
+    }
+
     protected function getCommand($input)
     {
         $command = $this

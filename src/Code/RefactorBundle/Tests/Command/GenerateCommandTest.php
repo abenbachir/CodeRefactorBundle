@@ -13,9 +13,33 @@ use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Helper\FormatterHelper;
 use Symfony\Component\DependencyInjection\Container;
 use Code\RefactorBundle\Helper\DialogHelper;
+use Symfony\Component\Filesystem\Filesystem;
 
 abstract class GenerateCommandTest extends \PHPUnit_Framework_TestCase
 {
+    protected $filesystem;
+    protected $tmpDir;
+    protected $projectDir;
+
+    public function setUp()
+    {
+        $this->tmpDir = sys_get_temp_dir().'/sf2'; //'/var/www/sf2';
+        $this->projectDir = $this->tmpDir;
+        $this->filesystem = new Filesystem();
+        $this->filesystem->remove($this->tmpDir);
+        /*
+        // get symfony standard edition
+        exec("composer create-project symfony/framework-standard-edition $this->projectDir/ 2.3.1 --quiet --no-interaction");
+        // configuration
+        exec("setfacl -R -m u:www-data:rwx -m u:`whoami`:rwx $this->projectDir/app/cache $this->projectDir/app/logs");
+        exec("setfacl -dR -m u:www-data:rwx -m u:`whoami`:rwx $this->projectDir/app/cache $this->projectDir/app/logs");
+*/
+    }
+    public function tearDown()
+    {
+        $this->filesystem->remove($this->tmpDir);
+    }
+
     protected function getHelperSet($input)
     {
         $dialog = new DialogHelper();
@@ -70,7 +94,8 @@ abstract class GenerateCommandTest extends \PHPUnit_Framework_TestCase
         $container->set('kernel', $kernel);
         $container->set('filesystem', $filesystem);
 
-        $container->setParameter('kernel.root_dir', sys_get_temp_dir());
+        $container->setParameter('kernel.root_dir', $this->projectDir.'/app');
+        $container->setParameter('code_refactor.working_dir', $this->projectDir);
 
         return $container;
     }
