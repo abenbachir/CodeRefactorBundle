@@ -24,6 +24,7 @@ class ScanDirTest extends WebTestCase {
             $this->assertArrayHasKey($key,$resultsLinear);
         }
         $this->assertEmpty(array_diff($resultsRecursive,$resultsLinear));
+        
     }
 
 }

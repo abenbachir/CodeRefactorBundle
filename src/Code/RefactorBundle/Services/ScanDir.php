@@ -30,6 +30,42 @@ class ScanDir
         return $this->recursiveSearch($pattern, $this->getWorkingDir());
     }
 
+    public function existProject($name)
+    {
+        $src = $this->getWorkingDir().'/src';
+        $directories = glob($src . "/*", GLOB_ONLYDIR );
+        foreach($directories as $directory)
+        {
+            $file = new File($directory, false);
+            if(strtoupper($file->getFilename()) === strtoupper($name))
+                return true;
+        }
+        return false;
+    }
+
+    public function existBundle($bundle)
+    {
+        // get bundles from kernel
+        return false;
+    }
+
+    public function getProjectPatterns($name)
+    {
+        $name = strtolower($name);
+        $list = array();
+        $list[] = $name . '_'; // for services : like acme_user.provider
+        $name[0] = strtoupper($name[0]); // make the acme -> Acme
+        $list[] = $name;
+        return $list;
+    }
+
+    public function getBundlePatterns($namespace)
+    {
+        $list = array();
+        return $list;
+    }
+
+
     public function linearSearch($pattern)
     {
         $files = array();

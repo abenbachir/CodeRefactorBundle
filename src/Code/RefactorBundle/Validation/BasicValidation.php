@@ -10,32 +10,31 @@
 namespace Code\RefactorBundle\Validation;
 
 
-class BasicValidation {
+class BasicValidation
+{
 
-    public static function validateSearchName($search)
+    public static function validateExistingProject($project)
     {
-        if(empty($search))
-            throw new \InvalidArgumentException('The $search can not be empty');
+        if(gettype($project) !== 'string')
+            throw new \InvalidArgumentException('Invalid type, only accept string type');
+        return $project;
+    }
 
-        if(strlen($search) < 2)
+    public static function validateName($name)
+    {
+        if(empty($name))
+            throw new \InvalidArgumentException('The $name can not be empty');
+
+        if(strlen($name) < 2)
             throw new \InvalidArgumentException('The length should be at least 2');
     }
 
-    public static function validateReplaceName($replace)
+    public static function validateRefactorName($old, $new)
     {
-        if(empty($replace))
-            throw new \InvalidArgumentException('The $replace can not be empty');
+        self::validateName($old);
+        self::validateName($new);
 
-        if(strlen($replace) < 2)
-            throw new \InvalidArgumentException('The length should be at least 2');
-    }
-
-    public static function validatePreRefactoring($search, $replace)
-    {
-        self::validateSearchName($search);
-        self::validateReplaceName($replace);
-
-        if( $search === $replace )
-            throw new \InvalidArgumentException('$search and $replace must be different');
+        if( $old === $new )
+            throw new \InvalidArgumentException('you must provide a different name for refactoring');
     }
 }

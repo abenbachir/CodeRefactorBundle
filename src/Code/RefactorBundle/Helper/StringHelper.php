@@ -30,7 +30,7 @@ class StringHelper
                 return $result;
                 break;
             default:
-                throw new \Exception("Invalide input needle type");
+                throw new \Exception("Invalid input needle type: " . gettype($needle));
         }
     }
     public static function endsWith($haystack, $needle)
@@ -53,7 +53,7 @@ class StringHelper
                 return $result;
                 break;
             default:
-                throw new \Exception("Invalide input needle type");
+                throw new \Exception("Invalid input needle type: " . gettype($needle));
         }
     }
 
@@ -74,7 +74,7 @@ class StringHelper
                 return $result;
                 break;
             default:
-                throw new \Exception("Invalide input needle type");
+                throw new \Exception("Invalid input needle type : " . gettype($needle));
         }
     }
 }
