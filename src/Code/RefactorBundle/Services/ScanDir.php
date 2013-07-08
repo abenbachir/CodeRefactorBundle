@@ -23,6 +23,7 @@ class ScanDir
     public function __construct()
     {
         $this->filesystem = new Filesystem();
+
     }
 
     public function search($pattern)

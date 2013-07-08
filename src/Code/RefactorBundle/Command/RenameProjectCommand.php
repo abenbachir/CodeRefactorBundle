@@ -24,11 +24,16 @@ class RenameProjectCommand extends RefactorCommand {
     protected function configure()
     {
         $this
+            ->setName('refactor:project:rename')
+            ->setDescription('Rename a project')
+            //->addArgument('project-name', InputOption::VALUE_REQUIRED, 'The name of the project to refactor')
+            //->addArgument('new-project-name', InputOption::VALUE_REQUIRED, 'The new name of the project')
+
             ->setDefinition(array(
                 new InputOption('project-name', '', InputOption::VALUE_REQUIRED, 'The name of the project to refactor'),
                 new InputOption('new-project-name', '', InputOption::VALUE_REQUIRED, 'The new name of the project'),
             ))
-            ->setDescription('Rename a project')
+
             ->setHelp(<<<EOT
                         The <info>refactor:project:rename</info> command helps you refactoring your projects.
 
@@ -49,7 +54,6 @@ class RenameProjectCommand extends RefactorCommand {
                         Note that the bundle namespace must end with "Bundle".
 EOT
             )
-            ->setName('refactor:project:rename')
         ;
     }
 
@@ -61,16 +65,17 @@ EOT
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        var_dump("Start Execution");
         $dialog = $this->getDialogHelper();
         $scanDir = $this->getScanDir();
 
-        if ($input->isInteractive()) {
+        /*if ($input->isInteractive()) {
             if (!$dialog->askConfirmation($output, $dialog->getQuestion('Do you confirm refactoring', 'yes', '?'), true)) {
                 $output->writeln('<error>Command aborted</error>');
 
                 return 1;
             }
-        }
+        }*/
         $projectName = $input->getOption('project-name');
         $newProjectName = $input->getOption('new-project-name');
         //BasicValidation::validateRefactorName($projectName, $newProjectName);
@@ -79,14 +84,14 @@ EOT
 
         $newPatterns = $scanDir->getProjectPatterns($newProjectName);
         $results = $scanDir->search($newPatterns);
-        if($results)
+        /*if($results)
         {
             if (!$dialog->askConfirmation($output, $dialog->getQuestion(sprintf('This name "%s" already exist in %s files in your code, there will be no rollback if you continue, do you still want to continue', $newProjectName, count($results)), 'no', '?'), false)) {
                 $output->writeln('<error>Command aborted</error>');
 
                 return 1;
             }
-        }
+        }*/
 
         $patterns = $scanDir->getProjectPatterns($projectName);
         $files = $scanDir->search($patterns);
@@ -94,7 +99,7 @@ EOT
             throw new \InvalidArgumentException(sprintf('No changes found for the project "%s".', $projectName));
 
         $dialog->writeSection($output, 'Project refactoring name');
-
+/*
         foreach($files as $file)
         {
             if($file->isFile())
@@ -107,6 +112,8 @@ EOT
             $newName = str_replace($patterns, $newPatterns, $file->getFilename());
             rename($file->getPathname(), dirname($file->getPathname()).'/'.$newName);
         }
+*/
+        $dialog->writeSection($output, 'done');
 
     }
 
@@ -142,5 +149,14 @@ EOT
 
         if($scanDir->existProject($newProjectName))
             throw new \InvalidArgumentException(sprintf('This project "%s" already exist.', $projectName));
+
+        // summary
+        $output->writeln(array(
+            '',
+            $this->getHelper('formatter')->formatBlock('Summary before refactoring', 'bg=yellow;fg=white', true),
+            '',
+            sprintf("You are going to rename your project \"<info>%s</info>\" to \"<info>%s</info>\".", $projectName, $newProjectName),
+            '',
+        ));
     }
 }

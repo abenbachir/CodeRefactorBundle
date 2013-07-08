@@ -10,6 +10,7 @@
 namespace Code\RefactorBundle\Command;
 
 use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Code\RefactorBundle\Command\RenameProjectCommand;
 
 class RenameProjectCommandTest extends GenerateCommandTest
@@ -22,28 +23,26 @@ class RenameProjectCommandTest extends GenerateCommandTest
     {
         list($projectName, $newProjectName) = $expected;
 
-
         $tester = new CommandTester($this->getCommand($input));
+        //var_dump($this->getContainer()->get('code_refactor.scan_dir')->getWorkingDir());
         $tester->execute($options);
     }
 
     public function getInteractiveCommandData()
     {
         return array(
-            array(array('--project-name' => 'Acme', '--new-project-name' => 'Foo'), array('Acme','Foo'), array('Acme','Foo')),
+            //array(array('--project-name' => 'Acme', '--new-project-name' => 'Foo'), "Acme\nFoo", array('Acme','Foo')),
+            array(array(), "Acme\nFreak", array('Acme2','Freak')),
         );
     }
 
     protected function getCommand($input)
     {
-        $command = $this
-            ->getMockBuilder('Code\RefactorBundle\Command\RenameProjectCommand')
-            ->getMock()
-        ;
-
+        $application = new Application($this->getContainer()->get('kernel'));
+        $application->add(new RenameProjectCommand());
+        $command = $application->find('refactor:project:rename');
         $command->setContainer($this->getContainer());
         $command->setHelperSet($this->getHelperSet($input));
-
         return $command;
     }
 }

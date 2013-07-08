@@ -14,20 +14,31 @@ use Symfony\Component\Console\Helper\FormatterHelper;
 use Symfony\Component\DependencyInjection\Container;
 use Code\RefactorBundle\Helper\DialogHelper;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Code\RefactorBundle\Command\RenameProjectCommand;
 
-abstract class GenerateCommandTest extends \PHPUnit_Framework_TestCase
+abstract class GenerateCommandTest extends WebTestCase
 {
     protected $filesystem;
     protected $tmpDir;
     protected $projectDir;
+    protected $container;
 
     public function setUp()
     {
-        $this->tmpDir = sys_get_temp_dir().'/sf2'; //'/var/www/sf2';
+        $this->tmpDir = '/var/www/sf2';//sys_get_temp_dir().'/sf2';
         $this->projectDir = $this->tmpDir;
         $this->filesystem = new Filesystem();
+
+        $client = static::createClient();
+
+        $this->container = $client->getContainer();
+        $scanDir = $this->container->get('code_refactor.scan_dir');
+        $scanDir->setWorkingDir($this->projectDir);
+/*
         $this->filesystem->remove($this->tmpDir);
-        /*
+
         // get symfony standard edition
         exec("composer create-project symfony/framework-standard-edition $this->projectDir/ 2.3.1 --quiet --no-interaction");
         // configuration
@@ -35,9 +46,43 @@ abstract class GenerateCommandTest extends \PHPUnit_Framework_TestCase
         exec("setfacl -dR -m u:www-data:rwx -m u:`whoami`:rwx $this->projectDir/app/cache $this->projectDir/app/logs");
 */
     }
+
+    protected function createContainer()
+    {
+        $kernel = $this->getMock('Symfony\Component\HttpKernel\KernelInterface');
+        $kernel
+            ->expects($this->any())
+            ->method('getBundle')
+            ->will($this->returnValue($this->getBundle()))
+        ;
+        $kernel
+            ->expects($this->any())
+            ->method('getBundles')
+            ->will($this->returnValue(array($this->getBundle())))
+        ;
+
+
+        $scanDir = $this->getMock('Code\RefactorBundle\Services\ScanDir');
+        /*$scanDir
+            ->expects($this->any())
+            ->method('isAbsolutePath')
+            ->will($this->returnValue(true))
+        ;*/
+
+        $this->container = new Container();
+        $this->container->set('kernel', $kernel);
+        $this->container->set('filesystem', $this->filesystem);
+        //$this->container->set('code_refactor.scan_dir', $scanDir);
+
+        $this->container->setParameter('kernel.root_dir', $this->projectDir.'/app');
+        $this->container->setParameter('code_refactor.working_dir', $this->projectDir);
+
+        return $this->container;
+    }
+
     public function tearDown()
     {
-        $this->filesystem->remove($this->tmpDir);
+        //$this->filesystem->remove($this->tmpDir);
     }
 
     protected function getHelperSet($input)
@@ -71,32 +116,8 @@ abstract class GenerateCommandTest extends \PHPUnit_Framework_TestCase
 
     protected function getContainer()
     {
-        $kernel = $this->getMock('Symfony\Component\HttpKernel\KernelInterface');
-        $kernel
-            ->expects($this->any())
-            ->method('getBundle')
-            ->will($this->returnValue($this->getBundle()))
-        ;
-        $kernel
-            ->expects($this->any())
-            ->method('getBundles')
-            ->will($this->returnValue(array($this->getBundle())))
-        ;
-
-        $filesystem = $this->getMock('Symfony\Component\Filesystem\Filesystem');
-        $filesystem
-            ->expects($this->any())
-            ->method('isAbsolutePath')
-            ->will($this->returnValue(true))
-        ;
-
-        $container = new Container();
-        $container->set('kernel', $kernel);
-        $container->set('filesystem', $filesystem);
-
-        $container->setParameter('kernel.root_dir', $this->projectDir.'/app');
-        $container->setParameter('code_refactor.working_dir', $this->projectDir);
-
-        return $container;
+        return $this->container;
     }
+
+
 }
