@@ -6,7 +6,7 @@ php:
   - 5.5
 
 before_script:
-    - apt-get install acl
+    - sudo apt-get install acl
     - getfacl .
     - composer self-update
     - composer install --prefer-source --no-interaction
