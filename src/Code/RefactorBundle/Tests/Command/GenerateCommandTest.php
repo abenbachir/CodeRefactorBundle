@@ -30,8 +30,7 @@ abstract class GenerateCommandTest extends WebTestCase
 
     public function setUp()
     {
-        $this->tmpDir = sys_get_temp_dir().'/sf2'; //'/var/www/sf2';
-        $this->projectDir = $this->tmpDir;
+        $this->projectDir = sys_get_temp_dir().'/sf2'; //'/var/www/sf2';
         $this->filesystem = new Filesystem();
 
         $client = static::createClient();
@@ -40,13 +39,14 @@ abstract class GenerateCommandTest extends WebTestCase
         $scanDir = $this->container->get('code_refactor.scan_dir');
         $scanDir->setWorkingDir($this->projectDir);
 
-        $this->filesystem->remove($this->tmpDir);
+        $this->filesystem->remove($this->projectDir);
 
         // get symfony standard edition
         exec("composer create-project symfony/framework-standard-edition $this->projectDir/ 2.3.1 --quiet --no-interaction");
         // configuration
         exec("setfacl -R -m u:www-data:rwx -m u:`whoami`:rwx $this->projectDir/app/cache $this->projectDir/app/logs");
         exec("setfacl -dR -m u:www-data:rwx -m u:`whoami`:rwx $this->projectDir/app/cache $this->projectDir/app/logs");
+        //exec("chmod -R 777 $this->projectDir");
 
     }
 
@@ -78,7 +78,7 @@ abstract class GenerateCommandTest extends WebTestCase
 
     public function tearDown()
     {
-        //$this->filesystem->remove($this->tmpDir);
+        //$this->filesystem->remove($this->projectDir);
     }
 
     protected function getHelperSet($input)
