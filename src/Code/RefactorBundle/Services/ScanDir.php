@@ -70,6 +70,7 @@ class ScanDir
     public function linearSearch($pattern)
     {
         $files = array();
+        $directories = array();
         // linear iteration over the tree
         $dir  = new \RecursiveDirectoryIterator($this->getWorkingDir(), \RecursiveDirectoryIterator::SKIP_DOTS);
         $tree = new \RecursiveIteratorIterator($dir, \RecursiveIteratorIterator::SELF_FIRST);
@@ -90,9 +91,11 @@ class ScanDir
                 StringHelper::contains($file->getFilename(), $pattern))
             {
 
-                $files[$file->getPathname()] = $file;
+                $directories[$file->getPathname()] = $file;
             }
         }
+        // put directories at the end
+        $files = array_merge($files, $directories);
         return $files;
     }
 

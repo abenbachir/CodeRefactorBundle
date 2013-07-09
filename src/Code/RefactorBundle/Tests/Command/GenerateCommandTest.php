@@ -30,7 +30,7 @@ abstract class GenerateCommandTest extends WebTestCase
 
     public function setUp()
     {
-        $this->tmpDir = '/var/www/sf2';//sys_get_temp_dir().'/sf2';
+        $this->tmpDir = sys_get_temp_dir().'/sf2'; //'/var/www/sf2';
         $this->projectDir = $this->tmpDir;
         $this->filesystem = new Filesystem();
 
@@ -39,7 +39,7 @@ abstract class GenerateCommandTest extends WebTestCase
         $this->container = $client->getContainer();
         $scanDir = $this->container->get('code_refactor.scan_dir');
         $scanDir->setWorkingDir($this->projectDir);
-/*
+
         $this->filesystem->remove($this->tmpDir);
 
         // get symfony standard edition
@@ -47,7 +47,7 @@ abstract class GenerateCommandTest extends WebTestCase
         // configuration
         exec("setfacl -R -m u:www-data:rwx -m u:`whoami`:rwx $this->projectDir/app/cache $this->projectDir/app/logs");
         exec("setfacl -dR -m u:www-data:rwx -m u:`whoami`:rwx $this->projectDir/app/cache $this->projectDir/app/logs");
-*/
+
     }
 
     protected function createContainer()
@@ -64,13 +64,6 @@ abstract class GenerateCommandTest extends WebTestCase
             ->will($this->returnValue(array($this->getBundle())))
         ;
 
-
-        $scanDir = $this->getMock('Code\RefactorBundle\Services\ScanDir');
-        /*$scanDir
-            ->expects($this->any())
-            ->method('isAbsolutePath')
-            ->will($this->returnValue(true))
-        ;*/
 
         $this->container = new Container();
         $this->container->set('kernel', $kernel);
@@ -96,24 +89,6 @@ abstract class GenerateCommandTest extends WebTestCase
         return new HelperSet(array(new FormatterHelper(), $this->dialog));
     }
 
-    protected function getBundle()
-    {
-        $bundle = $this->getMock('Symfony\Component\HttpKernel\Bundle\BundleInterface');
-        $bundle
-            ->expects($this->any())
-            ->method('getPath')
-            ->will($this->returnValue(sys_get_temp_dir()))
-        ;
-
-        return $bundle;
-    }
-    /**
-     * @return mixed
-     */
-    public function getDialog()
-    {
-        return $this->dialog;
-    }
     protected function getInputStream($input)
     {
         $stream = fopen('php://memory', 'r+', false);

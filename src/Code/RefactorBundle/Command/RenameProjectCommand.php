@@ -99,6 +99,7 @@ EOT
 
         $dialog->writeSection($output, 'Project refactoring name');
 
+        $directories = array();
         foreach($files as $file)
         {
             if($file->isFile())
@@ -106,12 +107,19 @@ EOT
                 // change content
                 $newContent = str_replace($patterns, $newPatterns, file_get_contents($file->getPathname()));
                 file_put_contents($file->getPathname(), $newContent);
+                // rename files first
+                $newName = str_replace($patterns, $newPatterns, $file->getFilename());
+                rename($file->getPathname(), dirname($file->getPathname()).'/'.$newName);
+            }else{
+                $directories[] = $file;
             }
-            // rename the file/dir
-            $newName = str_replace($patterns, $newPatterns, $file->getFilename());
-            rename($file->getPathname(), dirname($file->getPathname()).'/'.$newName);
         }
-
+        // rename directories
+        foreach($directories as $directory)
+        {
+            $newName = str_replace($patterns, $newPatterns, $directory->getFilename());
+            rename($directory->getPathname(), dirname($directory->getPathname()).'/'.$newName);
+        }
         $dialog->writeSection($output, 'done');
 
     }
