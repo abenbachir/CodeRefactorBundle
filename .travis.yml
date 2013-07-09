@@ -12,6 +12,5 @@ before_script:
     - composer install --prefer-source --no-interaction
     - chmod -R 777 *
     - app/console cache:warmup --env=test
-    - chmod -R 777 *
 
 script: phpunit -c app
