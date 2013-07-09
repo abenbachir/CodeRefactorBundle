@@ -44,9 +44,10 @@ abstract class GenerateCommandTest extends WebTestCase
         // get symfony standard edition
         exec("composer create-project symfony/framework-standard-edition $this->projectDir/ 2.3.1 --quiet --no-interaction");
         // configuration
-        exec("sudo setfacl -R -m u:www-data:rwx -m u:`whoami`:rwx $this->projectDir/app/cache $this->projectDir/app/logs");
-        exec("sudo setfacl -dR -m u:www-data:rwx -m u:`whoami`:rwx $this->projectDir/app/cache $this->projectDir/app/logs");
-        //exec("chmod -R 777 $this->projectDir");
+        exec("chmod -R 777 $this->projectDir");
+        exec("setfacl -R -m u:www-data:rwx -m u:`whoami`:rwx $this->projectDir/app/cache $this->projectDir/app/logs");
+        exec("setfacl -dR -m u:www-data:rwx -m u:`whoami`:rwx $this->projectDir/app/cache $this->projectDir/app/logs");
+
 
     }
 
