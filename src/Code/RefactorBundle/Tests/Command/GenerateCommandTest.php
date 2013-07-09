@@ -24,6 +24,9 @@ abstract class GenerateCommandTest extends WebTestCase
     protected $tmpDir;
     protected $projectDir;
     protected $container;
+    protected $dialog;
+
+
 
     public function setUp()
     {
@@ -87,10 +90,10 @@ abstract class GenerateCommandTest extends WebTestCase
 
     protected function getHelperSet($input)
     {
-        $dialog = new DialogHelper();
-        $dialog->setInputStream($this->getInputStream($input));
+        $this->dialog = new DialogHelper();
+        $this->dialog->setInputStream($this->getInputStream($input));
 
-        return new HelperSet(array(new FormatterHelper(), $dialog));
+        return new HelperSet(array(new FormatterHelper(), $this->dialog));
     }
 
     protected function getBundle()
@@ -104,7 +107,13 @@ abstract class GenerateCommandTest extends WebTestCase
 
         return $bundle;
     }
-
+    /**
+     * @return mixed
+     */
+    public function getDialog()
+    {
+        return $this->dialog;
+    }
     protected function getInputStream($input)
     {
         $stream = fopen('php://memory', 'r+', false);

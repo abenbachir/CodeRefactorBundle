@@ -21,22 +21,32 @@ class RenameProjectCommandTest extends GenerateCommandTest
      */
     public function testInteractiveCommand($options, $input, $expected)
     {
-        list($projectName, $newProjectName) = $expected;
-
-        $tester = new CommandTester($this->getCommand($input));
-        //var_dump($this->getContainer()->get('code_refactor.scan_dir')->getWorkingDir());
+        $command = $this->getCommand($input);
+        $tester = new CommandTester($command);
         $tester->execute($options);
+
+        $this->assertRegExp($expected, $tester->getDisplay(), '->execute() ');
     }
 
     public function getInteractiveCommandData()
     {
         return array(
-            //array(array('--project-name' => 'Acme', '--new-project-name' => 'Foo'), "Acme\nFoo", array('Acme','Foo')),
-            array(array(), "Acme\nFreak", array('Acme2','Freak')),
+            array(array('command'=>'refactor:project:rename'), "Acme\nFoo\nno",'/[yes]? Command aborted$/'),
+            array(array('command'=>'refactor:project:rename'), "Acme\nTest\nyes\nno",'/[no]? Command aborted$/'),
         );
     }
 
-    protected function getCommand($input)
+    public function testRenameProjectCommand()
+    {
+        $command = $this->getCommand("Acme");
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(array('command'=>$command->getName(), '--project-name' => 'Acme', '--new-project-name' => 'Application'));
+
+        $files = $this->getContainer()->get('code_refactor.scan_dir')->search('Acme');
+        $this->assertEmpty($files);
+    }
+
+    protected function getCommand($input = "")
     {
         $application = new Application($this->getContainer()->get('kernel'));
         $application->add(new RenameProjectCommand());
