@@ -1,7 +1,11 @@
+Getting Started With CodeRefactorBundle
+==================================
+
 ## Installation
 
 
-### Step 1: Download FOSUserBundle using composer
+
+### Step 1: Download CodeRefactorBundle using composer
 
 Add CodeRefactorBundle in your composer.json:
 
