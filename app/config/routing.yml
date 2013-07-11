@@ -1,5 +1,0 @@
-code_refactor:
-    resource: "@CodeRefactorBundle/Controller/"
-    type:     annotation
-    prefix:   /
-
