@@ -7,17 +7,20 @@
  * To change this template use File | Settings | File Templates.
  */
 namespace Code\RefactorBundle\Tests\Services;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class ScanDirTest extends WebTestCase {
+use Code\RefactorBundle\Tests\BaseTest;
+
+class ScanDirTest extends BaseTest
+{
 
     public function testRecursiveSearch()
     {
-        $client = static::createClient();
-        $scanDir = $client->getContainer()->get('code_refactor.scan_dir');
-
-        $resultsRecursive = $scanDir->search('Sensio');
-        $resultsLinear = $scanDir->linearSearch('Sensio');
+        $this->projectDir = dirname(dirname(__DIR__)).'/vendor';
+        $container = $this->getContainer();
+        $scanDir = $container->get('code_refactor.scan_dir');
+        $scanDir->setWorkingDir($this->projectDir);
+        $resultsRecursive = $scanDir->search('Symfony');
+        $resultsLinear = $scanDir->linearSearch('Symfony');
         $this->assertEquals(count($resultsRecursive),count($resultsLinear));
         foreach($resultsRecursive as $key => $file)
         {

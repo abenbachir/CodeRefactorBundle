@@ -12,7 +12,9 @@ namespace Code\RefactorBundle\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Code\RefactorBundle\Refactor;
 use Code\RefactorBundle\Helper\DialogHelper;
-abstract class RefactorCommand extends ContainerAwareCommand {
+
+abstract class RefactorCommand extends ContainerAwareCommand 
+{
 
     protected function getDialogHelper()
     {
