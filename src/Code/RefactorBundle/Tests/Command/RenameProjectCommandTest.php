@@ -38,11 +38,14 @@ class RenameProjectCommandTest extends GenerateCommandTest
 
     public function testRenameProjectCommand()
     {
-        $command = $this->getCommand("Acme");
+        $project = "Acme";
+        $command = $this->getCommand($project);
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array('command'=>$command->getName(), '--project-name' => 'Acme', '--new-project-name' => 'Application'));
+        $commandTester->execute(array('command'=>$command->getName(), '--project-name' => $project, '--new-project-name' => 'MyApplication'));
 
-        $files = $this->getContainer()->get('code_refactor.scan_dir')->search('Acme');
+        $files = $this->getContainer()->get('code_refactor.scan_dir')->search($project);
+        foreach($files as $key => $file)
+            var_dump($key);
         $this->assertEmpty($files);
     }
 

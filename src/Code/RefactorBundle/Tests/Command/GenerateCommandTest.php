@@ -30,7 +30,7 @@ abstract class GenerateCommandTest extends WebTestCase
 
     public function setUp()
     {
-        $this->projectDir = sys_get_temp_dir().'/sf2'; //'/var/www/sf2';
+        $this->projectDir =  sys_get_temp_dir().'/sf2'; //'/var/www/sf2';
         $this->filesystem = new Filesystem();
 
         $client = static::createClient();
@@ -79,7 +79,7 @@ abstract class GenerateCommandTest extends WebTestCase
 
     public function tearDown()
     {
-        //$this->filesystem->remove($this->projectDir);
+        $this->filesystem->remove($this->projectDir);
     }
 
     protected function getHelperSet($input)

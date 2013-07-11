@@ -52,9 +52,9 @@ class ScanDir
 
     public function getProjectPatterns($name)
     {
-        $name = strtolower($name);
         $list = array();
-        $list[] = $name . '_'; // for services : like acme_user.provider
+        $list[] = strtolower($name) . '_'; // for services : like acme_user.provider
+        $list[] = strtolower($name) . '.';
         $name[0] = strtoupper($name[0]); // make the acme -> Acme
         $list[] = $name;
         return $list;
