@@ -53,8 +53,8 @@ class ScanDir
     public function getProjectPatterns($name)
     {
         $list = array();
-        $list[] = strtolower($name) . '_'; // for services : like acme_user.provider
-        $list[] = strtolower($name) . '.';
+        $list[] = StringHelper::unCamelCase($name) . '_'; // for services : like acme_user.provider
+        $list[] = StringHelper::unCamelCase($name) . '.';
         $name[0] = strtoupper($name[0]); // make the acme -> Acme
         $list[] = $name;
         return $list;

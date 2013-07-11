@@ -60,4 +60,24 @@ class StringHelperTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(StringHelper::contains($this->text,array('-','+','=')));
         $this->assertTrue(StringHelper::contains($this->text,array('versions','essentially','...')));
     }
+
+    public function testUnCamelCase()
+    {
+        $tests = array(
+            'simpleTest' => 'simple_test',
+            'easy' => 'easy',
+            'HTML' => 'html',
+            'simpleXML' => 'simple_xml',
+            'PDFLoad' => 'pdf_load',
+            'startMIDDLELast' => 'start_middle_last',
+            'AString' => 'a_string',
+            'Some4Numbers234' => 'some4_numbers234',
+            'TEST123String' => 'test123_string',
+        );
+
+        foreach($tests as $key => $test)
+        {
+            $this->assertEquals(StringHelper::unCamelCase($key), $test);
+        }
+    }
 }
