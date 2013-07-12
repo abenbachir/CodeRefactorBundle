@@ -51,6 +51,6 @@ Add the following configuration to your `config.yml`
 # app/config/config.yml
 code_refactor:
    scan:
-       extensions: ['php','twig','yml','xml','js']
+       extensions: ['php','twig','yml','xml','js','css']
        ignore: ['/vendor','/web','/app/cache','/app/logs','/bin']
 ```
