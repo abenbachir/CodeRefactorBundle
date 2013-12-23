@@ -54,3 +54,9 @@ code_refactor:
        extensions: ['php','twig','yml','xml','js','css']
        ignore: ['/vendor','/web','/app/cache','/app/logs','/bin']
 ```
+
+### Step 6: Run command
+
+``` shell
+php app/console refactor:project:rename
+```
