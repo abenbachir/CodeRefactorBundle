@@ -9,6 +9,9 @@
             "email": "anis.benbachir@gmail.com"
         }
     ],
+    "keywords":    [
+        "code", "refactor", "symfony", "symfony2"
+    ],
     "require": {
         "php": ">=5.4",
         "symfony/framework-bundle": "~2.2",
